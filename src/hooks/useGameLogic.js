@@ -1,10 +1,16 @@
 import { useState, useCallback } from 'react';
 import { calculatePercentage } from '../utils/gameHelpers';
-import { GAME_CONFIG, FEEDBACK_MESSAGES } from '../utils/constants';
 import { sightWords } from '../data/sightWords';
 
+// Game helper function
 const generateGameQuestion = (wordList) => {
-  const words = wordList || sightWords;
+  const words = wordList && wordList.length > 0 ? wordList : sightWords;
+  
+  if (words.length === 0) {
+    console.error('No words available for game');
+    return null;
+  }
+
   const correctWord = words[Math.floor(Math.random() * words.length)];
   const wrongWords = words
     .filter(w => w.word !== correctWord.word)
@@ -33,8 +39,21 @@ export const useGameLogic = () => {
   });
 
   const startGame = useCallback((wordList = null) => {
+    console.log('Starting game with word list:', wordList);
+    
+    // Determine which words to use
     const wordsToUse = wordList?.words || sightWords;
+    console.log('Words to use:', wordsToUse);
+    
+    // Generate first question
     const question = generateGameQuestion(wordsToUse);
+    
+    if (!question) {
+      console.error('Failed to generate question');
+      return;
+    }
+
+    console.log('Generated question:', question);
     
     setGameState({
       currentWord: question.correctWord,
@@ -65,6 +84,11 @@ export const useGameLogic = () => {
     const wordsToUse = gameState.currentWordList?.words || sightWords;
     const question = generateGameQuestion(wordsToUse);
     
+    if (!question) {
+      console.error('Failed to generate new question');
+      return '';
+    }
+    
     setGameState(prev => ({
       ...prev,
       currentWord: question.correctWord,
@@ -77,17 +101,17 @@ export const useGameLogic = () => {
   }, [gameState.currentWordList]);
 
   const handleAnswer = useCallback((selectedWord) => {
+    const isCorrect = selectedWord === gameState.currentWord;
+    
     setGameState(prev => ({
       ...prev,
       totalQuestions: prev.totalQuestions + 1,
-      score: selectedWord === prev.currentWord ? prev.score + 1 : prev.score,
-      feedback: selectedWord === prev.currentWord 
-        ? FEEDBACK_MESSAGES.CORRECT 
-        : FEEDBACK_MESSAGES.INCORRECT(prev.currentWord),
-      showCelebration: selectedWord === prev.currentWord
+      score: isCorrect ? prev.score + 1 : prev.score,
+      feedback: isCorrect ? 'Great job! 🎉' : `Try again! The word was "${prev.currentWord}"`,
+      showCelebration: isCorrect
     }));
 
-    return selectedWord === gameState.currentWord;
+    return isCorrect;
   }, [gameState.currentWord]);
 
   const getStats = useCallback(() => ({
