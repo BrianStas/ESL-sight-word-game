@@ -126,7 +126,7 @@ export const useGameLogic = () => {
     score: gameState.score,
     totalQuestions: gameState.totalQuestions,
     percentage: calculatePercentage(gameState.score, gameState.totalQuestions),
-    timeSpent: 0 // You can add time tracking later
+    timeSpent: 0 // for time tracking
   }), [gameState]);
 
   return {

@@ -149,8 +149,7 @@ export const wordListService = {
 
   // Search word lists
   async searchWordLists(searchTerm) {
-    // Note: Firestore doesn't support full-text search natively
-    // For production, consider using Algolia or similar service
+    // potentially use Algolia or another search service
     const q = query(
       collection(db, 'sharedLists'),
       where('isPublic', '==', true),
