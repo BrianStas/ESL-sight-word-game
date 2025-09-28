@@ -5,7 +5,7 @@ import { sightWords } from '../data/sightWords';
 // Game helper function
 const generateGameQuestion = (wordList) => {
   const words = wordList && wordList.length > 0 ? wordList : sightWords;
-  
+  //updating to update unfortunately
   if (words.length === 0) {
     console.error('No words available for game');
     return null;
