@@ -5,6 +5,8 @@ import Card from '../UI/Card';
 import { useAuth } from '../../contexts/AuthContext';
 
 const LoginForm = ({ onSwitchToRegister }) => {
+
+  //commented for the day
   const [formData, setFormData] = useState({
     email: '',
     password: ''
