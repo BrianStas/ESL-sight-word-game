@@ -1,14 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Search, Star, Download, Filter } from 'lucide-react';
-import Button from '../UI/Button';
-import Card from '../UI/Card';
-import { wordListService } from '../../services/wordListService';
-import { useAuth } from '../../contexts/AuthContext';
-
 const PublicWordLists = ({ onSelectWordList }) => {
-  const { currentUser } = useAuth();
   const [publicLists, setPublicLists] = useState([]);
-  const [filteredLists, setFilteredLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
@@ -21,12 +12,9 @@ const PublicWordLists = ({ onSelectWordList }) => {
     fetchPublicLists();
   }, []);
 
-  useEffect(() => {
-    filterLists();
-  }, [publicLists, searchTerm, filters]);
-
   const fetchPublicLists = async () => {
     try {
+      setLoading(true);
       const lists = await wordListService.getPublicWordLists();
       setPublicLists(lists);
     } catch (error) {
@@ -34,32 +22,6 @@ const PublicWordLists = ({ onSelectWordList }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const filterLists = () => {
-    let filtered = publicLists;
-
-    // Apply search term
-    if (searchTerm) {
-      filtered = filtered.filter(list =>
-        list.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        list.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        list.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
-
-    // Apply filters
-    if (filters.category) {
-      filtered = filtered.filter(list => list.category === filters.category);
-    }
-    if (filters.difficulty) {
-      filtered = filtered.filter(list => list.difficulty === filters.difficulty);
-    }
-    if (filters.language) {
-      filtered = filtered.filter(list => list.language === filters.language);
-    }
-
-    setFilteredLists(filtered);
   };
 
   const handleFilterChange = (filterType, value) => {
@@ -81,9 +43,33 @@ const PublicWordLists = ({ onSelectWordList }) => {
     }
   };
 
+  // Filter lists
+  const filteredLists = publicLists.filter(list => {
+    // Search filter
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch = 
+        list.title.toLowerCase().includes(searchLower) ||
+        list.description?.toLowerCase().includes(searchLower) ||
+        list.tags?.some(tag => tag.toLowerCase().includes(searchLower));
+      if (!matchesSearch) return false;
+    }
+    
+    // Category filter
+    if (filters.category && list.category !== filters.category) return false;
+    
+    // Difficulty filter
+    if (filters.difficulty && list.difficulty !== filters.difficulty) return false;
+    
+    // Language filter
+    if (filters.language && list.language !== filters.language) return false;
+    
+    return true;
+  });
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-64">
+      <div className="flex justify-center items-center min-h-screen">
         <div className="text-xl text-gray-600">Loading public word lists...</div>
       </div>
     );
@@ -97,17 +83,16 @@ const PublicWordLists = ({ onSelectWordList }) => {
       </div>
 
       {/* Search and Filters */}
-      <Card className="mb-8">
+      <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-1">
             <div className="relative">
-              <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search word lists..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-4 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -127,6 +112,8 @@ const PublicWordLists = ({ onSelectWordList }) => {
               <option value="numbers">Numbers</option>
               <option value="family">Family</option>
               <option value="food">Food</option>
+              <option value="nature">Nature</option>
+              <option value="emotions">Emotions</option>
             </select>
           </div>
 
@@ -156,22 +143,49 @@ const PublicWordLists = ({ onSelectWordList }) => {
             </select>
           </div>
         </div>
-      </Card>
+
+        {(searchTerm || filters.category || filters.difficulty || filters.language) && (
+          <div className="mt-4 flex items-center justify-between">
+            <p className="text-sm text-gray-600">
+              Showing {filteredLists.length} of {publicLists.length} lists
+            </p>
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setFilters({ category: '', difficulty: '', language: '' });
+              }}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              Clear filters
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Results */}
-      {filteredLists.length === 0 ? (
-        <Card className="text-center py-12">
+      {publicLists.length === 0 ? (
+        <div className="bg-white rounded-3xl shadow-2xl p-12 text-center">
+          <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-gray-700 mb-4">
+            No public word lists yet
+          </h3>
+          <p className="text-gray-600">
+            Be the first to create and share a word list with the community!
+          </p>
+        </div>
+      ) : filteredLists.length === 0 ? (
+        <div className="bg-white rounded-3xl shadow-2xl p-12 text-center">
           <h3 className="text-xl font-semibold text-gray-700 mb-4">
             No word lists found
           </h3>
           <p className="text-gray-600">
             Try adjusting your search terms or filters
           </p>
-        </Card>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredLists.map((wordList) => (
-            <Card key={wordList.id} className="hover:shadow-xl transition-shadow">
+            <div key={wordList.id} className="bg-white rounded-3xl shadow-2xl p-6 hover:shadow-xl transition-shadow">
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800 mb-1">
@@ -187,7 +201,7 @@ const PublicWordLists = ({ onSelectWordList }) => {
                   </div>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <Download className="w-4 h-4 text-gray-500" />
+                  <Users className="w-4 h-4 text-gray-500" />
                   <span className="text-xs text-gray-500">{wordList.usageCount || 0}</span>
                 </div>
               </div>
@@ -201,7 +215,8 @@ const PublicWordLists = ({ onSelectWordList }) => {
                   {wordList.words?.length || 0} words
                 </span>
                 <span className="text-xs text-gray-500">
-                  by {wordList.createdBy === currentUser?.uid ? 'You' : 'Teacher'}
+                  {wordList.language === 'mixed' ? 'Mixed' : 
+                   wordList.language === 'ko' ? 'Korean' : 'English'}
                 </span>
               </div>
 
@@ -223,15 +238,13 @@ const PublicWordLists = ({ onSelectWordList }) => {
                 </div>
               )}
 
-              <Button
+              <button
                 onClick={() => handleUseWordList(wordList)}
-                variant="success"
-                size="medium"
-                className="w-full"
+                className="w-full bg-gradient-to-r from-green-400 to-green-600 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 Use This List
-              </Button>
-            </Card>
+              </button>
+            </div>
           ))}
         </div>
       )}
