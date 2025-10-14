@@ -31,8 +31,6 @@ const PublicWordLists = ({ onSelectWordList }) => {
     }));
   };
 
-  //working on this
-  
   const handleUseWordList = async (wordList) => {
     try {
       // Increment usage count
