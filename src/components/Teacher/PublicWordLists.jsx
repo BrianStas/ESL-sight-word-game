@@ -1,3 +1,7 @@
+import React, { useState, useEffect } from 'react';
+import { Search, Users } from 'lucide-react';
+import { wordListService } from '../../services/wordListService';
+
 const PublicWordLists = ({ onSelectWordList }) => {
   const [publicLists, setPublicLists] = useState([]);
   const [loading, setLoading] = useState(true);
