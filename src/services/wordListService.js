@@ -10,7 +10,8 @@ import {
   where,
   orderBy,
   limit,
-  increment
+  increment,
+  serverTimestamp
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
@@ -88,6 +89,9 @@ export const wordListService = {
         createdAt: doc.data().createdAt?.toDate(),
         updatedAt: doc.data().updatedAt?.toDate()
       }));
+
+      // Sort client-side by usage count (most used first)
+      results.sort((a, b) => (b.usageCount || 0) - (a.usageCount || 0));
 
       // Apply client-side filters
       if (filters.category) {
@@ -183,6 +187,7 @@ export const wordListService = {
       throw error;
     }
   },
+  
   // Delete a word list
   async deleteWordList(listId) {
     try {
