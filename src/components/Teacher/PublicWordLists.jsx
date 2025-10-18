@@ -37,7 +37,7 @@ const PublicWordLists = ({ onSelectWordList }) => {
 
   const handleUseWordList = async (wordList) => {
     try {
-      // Increment usage count
+  
       await wordListService.incrementUsage(wordList.id);
       
       // Pass the word list to the parent component
@@ -47,9 +47,7 @@ const PublicWordLists = ({ onSelectWordList }) => {
     }
   };
 
-  // Filter lists
   const filteredLists = publicLists.filter(list => {
-    // Search filter
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       const matchesSearch = 
@@ -58,14 +56,11 @@ const PublicWordLists = ({ onSelectWordList }) => {
         list.tags?.some(tag => tag.toLowerCase().includes(searchLower));
       if (!matchesSearch) return false;
     }
-    
-    // Category filter
+
     if (filters.category && list.category !== filters.category) return false;
-    
-    // Difficulty filter
+
     if (filters.difficulty && list.difficulty !== filters.difficulty) return false;
-    
-    // Language filter
+ 
     if (filters.language && list.language !== filters.language) return false;
     
     return true;
