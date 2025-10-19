@@ -66,6 +66,8 @@ const PublicWordLists = ({ onSelectWordList }) => {
     return true;
   });
 
+  //adding this for special effect
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
