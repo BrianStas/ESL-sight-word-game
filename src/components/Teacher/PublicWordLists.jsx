@@ -46,7 +46,9 @@ const PublicWordLists = ({ onSelectWordList }) => {
       console.error('Error using word list:', error);
     }
   };
-  
+
+  //got it done, waiting on pr confirmation
+
   const filteredLists = publicLists.filter(list => {
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
