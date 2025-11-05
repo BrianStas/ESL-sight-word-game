@@ -4,7 +4,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useGameLogic } from './hooks/useGameLogic';
 import GameBoard from './components/Game/GameBoard';
 import TicTacToeSpellingGame from './components/Game/TicTacToeSpellingGame';
-import { LoginForm, RegisterForm } from './components/Auth/LoginForm';
+import LoginForm from './components/Auth/LoginForm';
+import RegisterForm from './components/Auth/RegisterForm';
 import Navigation from './components/Layout/Navigation';
 import TeacherDashboard from './components/Teacher/TeacherDashboard';
 import PublicWordLists from './components/Teacher/PublicWordLists';
@@ -249,6 +250,7 @@ const AppContent = () => {
             onSelectWordList={(wordList) => {
               setSelectedWordList(wordList);
               setCurrentView('game');
+              setGameMode('solo');
               startGame(wordList);
             }}
           />
@@ -259,7 +261,18 @@ const AppContent = () => {
       
       case 'game':
       default:
-        if (gameState.gameStarted) {
+        // Tic-Tac-Toe mode - THIS NEEDS TO BE FIRST
+        if (gameMode === 'tictactoe') {
+          return (
+            <TicTacToeSpellingGame
+              wordList={selectedWordList}
+              onBackToMenu={handleBackToMenu}
+            />
+          );
+        }
+        
+        // Solo game mode
+        if (gameState.gameStarted && gameMode === 'solo') {
           return (
             <GameBoard 
               selectedWordList={selectedWordList}
@@ -273,10 +286,12 @@ const AppContent = () => {
           );
         }
         
+        // Game selection menu
         return (
           <GameSelection 
             onSelectWordList={handleSelectWordList}
             onStartDefaultGame={handleStartDefaultGame}
+            onStartTicTacToe={handleStartTicTacToe}
           />
         );
     }
