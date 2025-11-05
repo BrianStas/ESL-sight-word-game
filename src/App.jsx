@@ -3,8 +3,8 @@ import { Trophy } from 'lucide-react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useGameLogic } from './hooks/useGameLogic';
 import GameBoard from './components/Game/GameBoard';
-import LoginForm from './components/Auth/LoginForm';
-import RegisterForm from './components/Auth/RegisterForm';
+import TicTacToeSpellingGame from './components/Game/TicTacToeSpellingGame';
+import { LoginForm, RegisterForm } from './components/Auth/LoginForm';
 import Navigation from './components/Layout/Navigation';
 import TeacherDashboard from './components/Teacher/TeacherDashboard';
 import PublicWordLists from './components/Teacher/PublicWordLists';
@@ -26,36 +26,61 @@ const useSpeechSynthesis = () => {
 };
 
 // Game Selection Component
-const GameSelection = ({ onSelectWordList, onStartDefaultGame }) => {
+const GameSelection = ({ onSelectWordList, onStartDefaultGame, onStartTicTacToe }) => {
   const { userProfile } = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full text-center">
-        <div className="mb-8">
+      <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-3xl w-full">
+        <div className="mb-8 text-center">
           <Trophy className="w-20 h-20 text-yellow-500 mx-auto mb-6" />
           <h1 className="text-4xl font-bold text-gray-800 mb-4">ESL Sight Words Game</h1>
-          <p className="text-gray-600 text-lg">Choose how you want to play!</p>
+          <p className="text-gray-600 text-lg">Choose your game mode!</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white border-2 border-blue-200 hover:border-blue-400 transition-colors cursor-pointer rounded-2xl p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-3">Quick Start</h3>
-            <p className="text-gray-600 mb-4">
-              Play with our default sight words collection
-            </p>
-            <button
-              onClick={onStartDefaultGame}
-              className="w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white text-lg font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-            >
-              Play Now! 🎮
-            </button>
-          </div>
+        {/* Game Modes */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Game Modes</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Individual Practice */}
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 hover:border-blue-400 transition-colors cursor-pointer rounded-2xl p-6">
+              <div className="text-4xl mb-3">👤</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Individual Practice</h3>
+              <p className="text-gray-600 mb-4 text-sm">
+                Listen to words and select the correct answer. Perfect for solo practice!
+              </p>
+              <button
+                onClick={onStartDefaultGame}
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white text-lg font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              >
+                Play Solo 🎮
+              </button>
+            </div>
 
+            {/* Classroom Tic-Tac-Toe */}
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-200 hover:border-purple-400 transition-colors cursor-pointer rounded-2xl p-6">
+              <div className="text-4xl mb-3">🏫</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Classroom Tic-Tac-Toe</h3>
+              <p className="text-gray-600 mb-4 text-sm">
+                Team-based spelling game! Perfect for whole class participation.
+              </p>
+              <button
+                onClick={onStartTicTacToe}
+                className="w-full bg-gradient-to-r from-purple-500 to-purple-700 text-white text-lg font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              >
+                Play Teams 👥
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Custom Lists */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Custom Word Lists</h2>
           <div className="bg-white border-2 border-green-200 hover:border-green-400 transition-colors cursor-pointer rounded-2xl p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-3">Custom Lists</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-3">Choose from Library</h3>
             <p className="text-gray-600 mb-4">
-              Choose from teacher-created word lists
+              Browse teacher-created word lists or use your own custom lists
             </p>
             <button
               onClick={() => onSelectWordList('browse')}
@@ -67,8 +92,8 @@ const GameSelection = ({ onSelectWordList, onStartDefaultGame }) => {
         </div>
 
         {userProfile?.role === 'teacher' && (
-          <div className="mt-8 pt-8 border-t border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Teacher Tools</h3>
+          <div className="pt-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">Teacher Tools</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
                 onClick={() => onSelectWordList('dashboard')}
