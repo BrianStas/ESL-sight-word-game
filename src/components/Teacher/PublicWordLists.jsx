@@ -47,8 +47,6 @@ const PublicWordLists = ({ onSelectWordList }) => {
     }
   };
 
-  //moving along on resume and site
-
   const filteredLists = publicLists.filter(list => {
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
