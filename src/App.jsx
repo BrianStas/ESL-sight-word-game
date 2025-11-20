@@ -180,6 +180,7 @@ const AppContent = () => {
   const { speak } = useSpeechSynthesis();
   const [currentView, setCurrentView] = useState('game');
   const [selectedWordList, setSelectedWordList] = useState(null);
+  const [gameMode, setGameMode] = useState(null); // 'solo' or 'tictactoe'
 
   const stats = getStats();
 
@@ -208,9 +209,17 @@ const AppContent = () => {
     startGame(null); // Use default sight words
   };
 
+  const handleStartTicTacToe = () => {
+    console.log('Starting Tic-Tac-Toe game...');
+    setSelectedWordList(null);
+    setGameMode('tictactoe');
+    setCurrentView('game');
+  };
+
   const handleBackToMenu = () => {
     resetGame();
     setSelectedWordList(null);
+    setGameMode(null);
     setCurrentView('game');
   };
 

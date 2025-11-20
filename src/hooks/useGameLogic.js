@@ -33,6 +33,7 @@ export const useGameLogic = () => {
     totalQuestions: 0,
     feedback: '',
     showCelebration: false,
+    gameMode: null,
     gameStarted: false,
     currentWordList: null
   });
