@@ -47,8 +47,6 @@ const PublicWordLists = ({ onSelectWordList }) => {
     }
   };
 
-  //we made it in here
-
   const filteredLists = publicLists.filter(list => {
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
