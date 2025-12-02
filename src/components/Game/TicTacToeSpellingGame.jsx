@@ -9,6 +9,7 @@ const TicTacToeSpellingGame = ({ wordList, onBackToMenu }) => {
   const [teamOScore, setTeamOScore] = useState(0);
   const [winner, setWinner] = useState(null);
   const [gameOver, setGameOver] = useState(false);
+  const [showTeacherView, setShowTeacherView] = useState(false);
 
   // Initialize grid with random words
   useEffect(() => {
@@ -143,10 +144,10 @@ const TicTacToeSpellingGame = ({ wordList, onBackToMenu }) => {
     } else if (cell.state === 'O') {
       return <Circle className="w-16 h-16 text-red-600" strokeWidth={4} />;
     } else {
-      const blanks = '_ '.repeat(cell.word.length).trim();
+      // Show grid number instead of blanks to avoid giving away word length
       return (
-        <div className="text-2xl font-mono text-gray-600 tracking-wider">
-          {blanks}
+        <div className="text-4xl font-bold text-gray-400">
+          {cell.id + 1}
         </div>
       );
     }
@@ -282,13 +283,27 @@ const TicTacToeSpellingGame = ({ wordList, onBackToMenu }) => {
           >
             ← Back to Menu
           </button>
-          
-          {wordList && (
-            <div className="bg-white/90 rounded-lg px-4 py-2">
-              <div className="text-sm text-gray-600">Playing:</div>
-              <div className="font-semibold text-gray-800">{wordList.title}</div>
-            </div>
-          )}
+
+          <div className="flex items-center space-x-4">
+            {wordList && (
+              <div className="bg-white/90 rounded-lg px-4 py-2">
+                <div className="text-sm text-gray-600">Playing:</div>
+                <div className="font-semibold text-gray-800">{wordList.title}</div>
+              </div>
+            )}
+            
+            {/* Teacher Preview Toggle */}
+            <button
+              onClick={() => setShowTeacherView(!showTeacherView)}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                showTeacherView 
+                  ? 'bg-yellow-500 text-white' 
+                  : 'bg-white/90 text-gray-700 hover:bg-white'
+              }`}
+            >
+              👁️ {showTeacherView ? 'Hide' : 'Show'} Words
+            </button>
+          </div>
         </div>
 
         {/* Score Board */}
@@ -326,6 +341,26 @@ const TicTacToeSpellingGame = ({ wordList, onBackToMenu }) => {
 
         {/* Game Grid */}
         <div className="bg-white rounded-3xl shadow-2xl p-8">
+          {/* Teacher Preview Panel */}
+          {showTeacherView && (
+            <div className="mb-6 bg-yellow-50 border-2 border-yellow-300 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-bold text-yellow-800">👨‍🏫 Teacher View (Students can't see this!)</h3>
+                <span className="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded">Keep this away from screen</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-sm">
+                {grid.map((cell) => (
+                  <div key={cell.id} className={`p-2 rounded ${cell.state ? 'bg-gray-200' : 'bg-white'}`}>
+                    <span className="font-bold text-yellow-700">#{cell.id + 1}:</span>{' '}
+                    <span className={cell.state ? 'line-through text-gray-500' : 'font-semibold'}>
+                      {cell.word}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
             {grid.map((cell) => (
               <button
@@ -355,10 +390,13 @@ const TicTacToeSpellingGame = ({ wordList, onBackToMenu }) => {
         </div>
 
         {/* Instructions */}
-        <div className="mt-6 bg-white/90 rounded-xl p-4 text-center">
-          <p className="text-gray-700">
-            <strong>How to Play:</strong> Click a square to hear the word. Students spell it on paper/whiteboard. 
-            Teacher clicks ✓ for correct or ✗ for wrong. First team to get 3 in a row wins!
+        <div className="mt-6 bg-white/90 rounded-xl p-4">
+          <p className="text-gray-700 text-center mb-2">
+            <strong>How to Play:</strong> Click a square (students see the number, not the word). 
+            Word plays aloud. Students spell it on paper/whiteboard.
+          </p>
+          <p className="text-gray-600 text-center text-sm">
+            💡 <strong>Tip:</strong> Use the "Show Words" button to see all words privately (keep away from screen!)
           </p>
         </div>
       </div>

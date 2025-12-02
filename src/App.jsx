@@ -4,8 +4,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useGameLogic } from './hooks/useGameLogic';
 import GameBoard from './components/Game/GameBoard';
 import TicTacToeSpellingGame from './components/Game/TicTacToeSpellingGame';
-import LoginForm from './components/Auth/LoginForm';
-import RegisterForm from './components/Auth/RegisterForm';
+import { LoginForm, RegisterForm } from './components/Auth/LoginForm';
 import Navigation from './components/Layout/Navigation';
 import TeacherDashboard from './components/Teacher/TeacherDashboard';
 import PublicWordLists from './components/Teacher/PublicWordLists';
@@ -29,6 +28,91 @@ const useSpeechSynthesis = () => {
 // Game Selection Component
 const GameSelection = ({ onSelectWordList, onStartDefaultGame, onStartTicTacToe }) => {
   const { userProfile } = useAuth();
+  const [showDifficultySelect, setShowDifficultySelect] = useState(false);
+
+  const handleSoloClick = () => {
+    setShowDifficultySelect(true);
+  };
+
+  const handleDifficultySelect = (difficulty) => {
+    onStartDefaultGame(difficulty);
+    setShowDifficultySelect(false);
+  };
+
+  if (showDifficultySelect) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 flex items-center justify-center p-4">
+        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-3xl w-full">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">Choose Difficulty</h2>
+            <p className="text-gray-600">Select your challenge level</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            {/* Easy */}
+            <button
+              onClick={() => handleDifficultySelect('easy')}
+              className="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300 hover:border-green-500 transition-all rounded-2xl p-6 text-left transform hover:scale-105"
+            >
+              <div className="text-4xl mb-3">😊</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Easy</h3>
+              <p className="text-gray-600 text-sm mb-3">
+                Listen and answer Yes/No. Perfect for beginners!
+              </p>
+              <div className="text-green-600 font-semibold text-sm">
+                ✓ Yes or No answers<br/>
+                ✓ Word is shown<br/>
+                ✓ Simple choice
+              </div>
+            </button>
+
+            {/* Normal */}
+            <button
+              onClick={() => handleDifficultySelect('normal')}
+              className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300 hover:border-blue-500 transition-all rounded-2xl p-6 text-left transform hover:scale-105"
+            >
+              <div className="text-4xl mb-3">🙂</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Normal</h3>
+              <p className="text-gray-600 text-sm mb-3">
+                Listen and choose from 4 options. Standard practice!
+              </p>
+              <div className="text-blue-600 font-semibold text-sm">
+                ✓ Multiple choice<br/>
+                ✓ 4 word options<br/>
+                ✓ Good challenge
+              </div>
+            </button>
+
+            {/* Hard */}
+            <button
+              onClick={() => handleDifficultySelect('hard')}
+              className="bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-300 hover:border-red-500 transition-all rounded-2xl p-6 text-left transform hover:scale-105"
+            >
+              <div className="text-4xl mb-3">😤</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Hard</h3>
+              <p className="text-gray-600 text-sm mb-3">
+                Listen and spell it yourself. Expert mode!
+              </p>
+              <div className="text-red-600 font-semibold text-sm">
+                ✓ Type the spelling<br/>
+                ✓ No hints given<br/>
+                ✓ Maximum challenge
+              </div>
+            </button>
+          </div>
+
+          <div className="text-center">
+            <button
+              onClick={() => setShowDifficultySelect(false)}
+              className="text-gray-600 hover:text-gray-800 font-medium"
+            >
+              ← Back to game modes
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 flex items-center justify-center p-4">
@@ -48,10 +132,10 @@ const GameSelection = ({ onSelectWordList, onStartDefaultGame, onStartTicTacToe 
               <div className="text-4xl mb-3">👤</div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Individual Practice</h3>
               <p className="text-gray-600 mb-4 text-sm">
-                Listen to words and select the correct answer. Perfect for solo practice!
+                Listen to words and practice at your own pace. Choose your difficulty!
               </p>
               <button
-                onClick={onStartDefaultGame}
+                onClick={handleSoloClick}
                 className="w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white text-lg font-bold py-3 px-6 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 Play Solo 🎮
@@ -115,6 +199,7 @@ const GameSelection = ({ onSelectWordList, onStartDefaultGame, onStartTicTacToe 
     </div>
   );
 };
+
 
 // Profile Component
 const Profile = () => {
@@ -181,6 +266,7 @@ const AppContent = () => {
   const [currentView, setCurrentView] = useState('game');
   const [selectedWordList, setSelectedWordList] = useState(null);
   const [gameMode, setGameMode] = useState(null); // 'solo' or 'tictactoe'
+  const [difficulty, setDifficulty] = useState('normal'); // 'easy', 'normal', 'hard'
 
   const stats = getStats();
 
@@ -200,12 +286,17 @@ const AppContent = () => {
     
     // If it's an actual word list object
     setSelectedWordList(wordList);
+    
+    // Ask user to choose game mode
+    // For now, default to solo game
+    setGameMode('solo');
     startGame(wordList);
   };
 
   const handleStartDefaultGame = () => {
-    console.log('Starting default game...');
+    console.log('Starting default solo game...');
     setSelectedWordList(null);
+    setGameMode('solo');
     startGame(null); // Use default sight words
   };
 
@@ -245,6 +336,7 @@ const AppContent = () => {
   const handleReset = () => {
     resetGame();
     setSelectedWordList(null);
+    setGameMode(null);
     setCurrentView('game');
   };
 
@@ -270,7 +362,7 @@ const AppContent = () => {
       
       case 'game':
       default:
-        // Tic-Tac-Toe mode - THIS NEEDS TO BE FIRST
+        // Tic-Tac-Toe mode
         if (gameMode === 'tictactoe') {
           return (
             <TicTacToeSpellingGame

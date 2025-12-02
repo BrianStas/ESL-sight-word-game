@@ -39,33 +39,27 @@ export const useGameLogic = () => {
   });
 
   const startGame = useCallback((wordList = null) => {
-    console.log('Starting game with word list:', wordList);
-    
-    // Determine which words to use
-    const wordsToUse = wordList?.words || sightWords;
-    console.log('Words to use:', wordsToUse);
-    
-    // Generate first question
-    const question = generateGameQuestion(wordsToUse);
-    
-    if (!question) {
-      console.error('Failed to generate question');
-      return;
-    }
+  console.log('startGame called with:', wordList);
+  const wordsToUse = wordList?.words || sightWords;
+  const question = generateGameQuestion(wordsToUse);
+  
+  if (!question) {
+    console.error('Failed to generate question');
+    return;
+  }
 
-    console.log('Generated question:', question);
-    
-    setGameState({
-      currentWord: question.correctWord,
-      options: question.options,
-      score: 0,
-      totalQuestions: 0,
-      feedback: '',
-      showCelebration: false,
-      gameStarted: true,
-      currentWordList: wordList
-    });
-  }, []);
+  console.log('Setting game state...');
+  setGameState({
+    currentWord: question.correctWord,
+    options: question.options,
+    score: 0,
+    totalQuestions: 0,
+    feedback: '',
+    showCelebration: false,
+    gameStarted: true,  // <- Make sure this is here!
+    currentWordList: wordList
+  });
+}, []);
 
   const resetGame = useCallback(() => {
     setGameState({
