@@ -4,7 +4,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useGameLogic } from './hooks/useGameLogic';
 import GameBoard from './components/Game/GameBoard';
 import TicTacToeSpellingGame from './components/Game/TicTacToeSpellingGame';
-import { LoginForm, RegisterForm } from './components/Auth/LoginForm';
+import LoginForm from './components/Auth/LoginForm';
+import RegisterForm from './components/Auth/RegisterForm';
 import Navigation from './components/Layout/Navigation';
 import TeacherDashboard from './components/Teacher/TeacherDashboard';
 import PublicWordLists from './components/Teacher/PublicWordLists';
@@ -288,7 +289,6 @@ const AppContent = () => {
     setSelectedWordList(wordList);
     
     // Ask user to choose game mode
-    // For now, default to solo game
     setGameMode('solo');
     startGame(wordList);
   };
