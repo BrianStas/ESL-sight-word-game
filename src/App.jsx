@@ -294,7 +294,7 @@ const AppContent = () => {
   };
 
   const handleStartDefaultGame = () => {
-    console.log('Starting default solo game...');
+    console.log('Starting with difficulty:', difficulty);
     setSelectedWordList(null);
     setGameMode('solo');
     startGame(null); // Use default sight words
