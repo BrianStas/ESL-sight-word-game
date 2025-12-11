@@ -38,7 +38,7 @@ export const useGameLogic = () => {
     currentWordList: null
   });
 
-  const startGame = useCallback((wordList = null) => {
+  const startGame = useCallback((difficulty= normal, wordList = null) => {
   console.log('startGame called with:', wordList);
   const wordsToUse = wordList?.words || sightWords;
   const question = generateGameQuestion(wordsToUse);

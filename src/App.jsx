@@ -36,6 +36,7 @@ const GameSelection = ({ onSelectWordList, onStartDefaultGame, onStartTicTacToe 
   };
 
   const handleDifficultySelect = (difficulty) => {
+    console.log('Difficulty selected:', difficulty);
     onStartDefaultGame(difficulty);
     setShowDifficultySelect(false);
   };
@@ -293,11 +294,11 @@ const AppContent = () => {
     startGame(wordList);
   };
 
-  const handleStartDefaultGame = () => {
-    console.log('Starting with difficulty:', difficulty);
+  const handleStartDefaultGame = (selectedDifficulty) => {
+    console.log('Starting with difficulty:', selectedDifficulty);
     setSelectedWordList(null);
     setGameMode('solo');
-    startGame(null); // Use default sight words
+    startGame(selectedDifficulty); // Use default sight words
   };
 
   const handleStartTicTacToe = () => {
@@ -383,6 +384,7 @@ const AppContent = () => {
               onSpeak={speak}
               onReset={handleReset}
               stats={stats}
+              difficulty={difficulty}
             />
           );
         }

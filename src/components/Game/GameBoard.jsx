@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Volume2, Star, RotateCcw, Check, X as XIcon } from 'lucide-react';
 
 const GameBoard = ({ selectedWordList, onBackToMenu, gameState, onWordSelection, onSpeak, onReset, stats, difficulty = 'normal' }) => {
+  console.log('GameBoard received difficulty prop:', difficulty); 
+ 
   const [spellingInput, setSpellingInput] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
 
