@@ -295,10 +295,17 @@ const AppContent = () => {
   };
 
   const handleStartDefaultGame = (selectedDifficulty) => {
-    console.log('Starting with difficulty:', selectedDifficulty);
+    console.log('1. handleStartDefaultGame called with:', selectedDifficulty);
+    console.log('2. Current difficulty state BEFORE update:', difficulty);
+    
     setSelectedWordList(null);
+    setDifficulty(selectedDifficulty);
     setGameMode('solo');
-    startGame(selectedDifficulty); // Use default sight words
+    
+    console.log('3. Called setDifficulty with:', selectedDifficulty);
+    console.log('4. Current difficulty state AFTER setDifficulty (may not be updated yet):', difficulty);
+    
+    startGame(null);
   };
 
   const handleStartTicTacToe = () => {
@@ -353,6 +360,7 @@ const AppContent = () => {
               setSelectedWordList(wordList);
               setCurrentView('game');
               setGameMode('solo');
+              setDifficulty('normal');
               startGame(wordList);
             }}
           />
@@ -374,7 +382,9 @@ const AppContent = () => {
         }
         
         // Solo game mode
-        if (gameState.gameStarted && gameMode === 'solo') {
+        if (gameMode === 'solo' && gameState.gameStarted) {
+          console.log('About to render GameBoard, difficulty state:', difficulty);
+          console.log('gameMode:', gameMode, 'gameStarted:', gameState.gameStarted);
           return (
             <GameBoard 
               selectedWordList={selectedWordList}
