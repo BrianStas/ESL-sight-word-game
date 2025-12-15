@@ -26,6 +26,8 @@ const useSpeechSynthesis = () => {
   return { speak };
 };
 
+//commented today
+
 // Game Selection Component
 const GameSelection = ({ onSelectWordList, onStartDefaultGame, onStartTicTacToe }) => {
   const { userProfile } = useAuth();
@@ -121,7 +123,7 @@ const GameSelection = ({ onSelectWordList, onStartDefaultGame, onStartTicTacToe 
       <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-3xl w-full">
         <div className="mb-8 text-center">
           <Trophy className="w-20 h-20 text-yellow-500 mx-auto mb-6" />
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">ESL Sight Words Game</h1>
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">ESL WordPath</h1>
           <p className="text-gray-600 text-lg">Choose your game mode!</p>
         </div>
 
