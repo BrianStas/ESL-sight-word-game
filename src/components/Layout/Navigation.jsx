@@ -27,14 +27,15 @@ const Navigation = ({ currentView, onNavigate }) => {
 
   const navItems = [
     { id: 'game', label: 'Play Game', icon: Trophy },
-    { id: 'dashboard', label: 'My Lists', icon: BookOpen, teacherOnly: true },
     { id: 'public', label: 'Browse Lists', icon: Users },
+    { id: 'leaderboard', label: 'Leaderboard', icon: Trophy },
     { id: 'profile', label: 'Profile', icon: User }
   ];
 
-  const filteredNavItems = navItems.filter(item => 
-    !item.teacherOnly || userProfile?.role === 'teacher'
-  );
+  // Add teacher-only items
+  if (userProfile?.role === 'teacher') {
+    navItems.splice(1, 0, { id: 'dashboard', label: 'My Lists', icon: BookOpen });
+  }
 
   return (
     <>
@@ -48,7 +49,7 @@ const Navigation = ({ currentView, onNavigate }) => {
               </div>
               
               <div className="flex space-x-4">
-                {filteredNavItems.map((item) => {
+                {navItems.map((item) => {
                   const Icon = item.icon;
                   return (
                     <button
@@ -70,17 +71,20 @@ const Navigation = ({ currentView, onNavigate }) => {
 
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-600">
-                Hello, {userProfile?.displayName || currentUser?.displayName}
+                Hello, {userProfile?.displayName || currentUser?.displayName || 'User'}
                 {userProfile?.role === 'teacher' && (
                   <span className="ml-2 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
                     Teacher
                   </span>
                 )}
               </div>
-              <Button onClick={handleLogout} variant="secondary" size="small">
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
-              </Button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-2 bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </button>
             </div>
           </div>
         </div>
@@ -103,7 +107,7 @@ const Navigation = ({ currentView, onNavigate }) => {
             <div className="pb-4 border-t">
               <div className="pt-4 pb-2">
                 <div className="text-sm text-gray-600 px-3">
-                  Hello, {userProfile?.displayName || currentUser?.displayName}
+                  Hello, {userProfile?.displayName || currentUser?.displayName || 'User'}
                   {userProfile?.role === 'teacher' && (
                     <span className="ml-2 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
                       Teacher
@@ -113,7 +117,7 @@ const Navigation = ({ currentView, onNavigate }) => {
               </div>
               
               <div className="space-y-1">
-                {filteredNavItems.map((item) => {
+                {navItems.map((item) => {
                   const Icon = item.icon;
                   return (
                     <button

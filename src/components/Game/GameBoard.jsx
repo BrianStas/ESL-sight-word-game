@@ -1,11 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Volume2, Star, RotateCcw, Check, X as XIcon } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { leaderboardService } from '../services/leaderboardService';
 
 const GameBoard = ({ selectedWordList, onBackToMenu, gameState, onWordSelection, onSpeak, onReset, stats, difficulty = 'normal' }) => {
-  console.log('GameBoard received difficulty prop:', difficulty); 
- 
+  const { currentUser, userProfile } = useAuth();
   const [spellingInput, setSpellingInput] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
+  const [sessionScore, setSessionScore] = useState(0);
+  const [sessionGames, setSessionGames] = useState(0);
+
+  // Track session score
+  useEffect(() => {
+    if (stats.score > sessionScore) {
+      setSessionScore(stats.score);
+      setSessionGames(stats.total);
+    }
+  }, [stats.score, stats.total]);
+
+  // Submit to leaderboard when user leaves the game
+  useEffect(() => {
+    return () => {
+      // Cleanup: submit score when component unmounts (user leaves game)
+      if (sessionScore > 0 && currentUser && userProfile) {
+        leaderboardService.submitScore(
+          currentUser.uid,
+          userProfile.displayName || currentUser.displayName,
+          sessionScore,
+          1 // count as 1 game session
+        ).catch(err => console.error('Error submitting to leaderboard:', err));
+      }
+    };
+  }, [sessionScore, currentUser, userProfile]);
 
   // Auto-play word when question changes
   useEffect(() => {
