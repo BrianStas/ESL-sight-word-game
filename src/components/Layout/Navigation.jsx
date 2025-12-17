@@ -3,14 +3,12 @@ import {
   Home, 
   BookOpen, 
   Users, 
-  Settings, 
   LogOut, 
   Menu, 
   X,
   User,
   Trophy
 } from 'lucide-react';
-import Button from '../UI/Button';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Navigation = ({ currentView, onNavigate }) => {
@@ -44,9 +42,12 @@ const Navigation = ({ currentView, onNavigate }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
-              <div className="flex-shrink-0">
-                <h1 className="text-xl font-bold text-blue-600">ESL Words</h1>
-              </div>
+              <button 
+                onClick={() => onNavigate('game')}
+                className="flex-shrink-0 hover:opacity-80 transition-opacity"
+              >
+                <h1 className="text-xl font-bold text-blue-600">ESL WordPath</h1>
+              </button>
               
               <div className="flex space-x-4">
                 {navItems.map((item) => {
@@ -94,7 +95,12 @@ const Navigation = ({ currentView, onNavigate }) => {
       <nav className="md:hidden bg-white shadow-lg border-b">
         <div className="px-4 sm:px-6">
           <div className="flex justify-between items-center h-16">
-            <h1 className="text-xl font-bold text-blue-600">ESL Words</h1>
+            <button 
+              onClick={() => onNavigate('game')}
+              className="hover:opacity-80 transition-opacity"
+            >
+              <h1 className="text-xl font-bold text-blue-600">ESL Words</h1>
+            </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="text-gray-600 hover:text-gray-900"

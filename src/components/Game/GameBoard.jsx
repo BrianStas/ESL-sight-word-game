@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Volume2, Star, RotateCcw, Check, X as XIcon } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { leaderboardService } from '../services/leaderboardService';
+import { leaderboardService } from '../../services/leaderboardService';
 
 const GameBoard = ({ selectedWordList, onBackToMenu, gameState, onWordSelection, onSpeak, onReset, stats, difficulty = 'normal' }) => {
   const { currentUser, userProfile } = useAuth();

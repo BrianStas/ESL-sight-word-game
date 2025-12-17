@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Medal, Crown, TrendingUp, Calendar } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { leaderboardService } from '../services/leaderboardService';
+import { leaderboardService } from '../../services/leaderboardService';
 
 const Leaderboard = () => {
   const { currentUser, userProfile } = useAuth();

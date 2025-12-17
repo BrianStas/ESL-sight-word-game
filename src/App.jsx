@@ -9,6 +9,7 @@ import RegisterForm from './components/Auth/RegisterForm';
 import Navigation from './components/Layout/Navigation';
 import TeacherDashboard from './components/Teacher/TeacherDashboard';
 import PublicWordLists from './components/Teacher/PublicWordLists';
+import Leaderboard from './components/Leaderboard/Leaderboard';
 import './index.css';
 
 // Simple speech synthesis hook
@@ -25,8 +26,6 @@ const useSpeechSynthesis = () => {
   
   return { speak };
 };
-
-//commented today
 
 // Game Selection Component
 const GameSelection = ({ onSelectWordList, onStartDefaultGame, onStartTicTacToe }) => {
