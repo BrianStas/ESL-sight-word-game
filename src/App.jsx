@@ -9,6 +9,7 @@ import RegisterForm from './components/Auth/RegisterForm';
 import Navigation from './components/Layout/Navigation';
 import TeacherDashboard from './components/Teacher/TeacherDashboard';
 import PublicWordLists from './components/Teacher/PublicWordLists';
+import LandingPage from './components/Landing/LandingPage';
 import './index.css';
 
 // Simple speech synthesis hook
@@ -25,8 +26,6 @@ const useSpeechSynthesis = () => {
   
   return { speak };
 };
-
-//commented today
 
 // Game Selection Component
 const GameSelection = ({ onSelectWordList, onStartDefaultGame, onStartTicTacToe }) => {
@@ -431,16 +430,29 @@ const AppContent = () => {
 
 // Authentication Flow
 const AuthFlow = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [view, setView] = useState('landing'); // 'landing', 'login', or 'register'
+
+  if (view === 'login') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 flex items-center justify-center p-4">
+        <LoginForm onSwitchToRegister={() => setView('register')} />
+      </div>
+    );
+  }
+
+  if (view === 'register') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 flex items-center justify-center p-4">
+        <RegisterForm onSwitchToLogin={() => setView('login')} />
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 flex items-center justify-center p-4">
-      {isLogin ? (
-        <LoginForm onSwitchToRegister={() => setIsLogin(false)} />
-      ) : (
-        <RegisterForm onSwitchToLogin={() => setIsLogin(true)} />
-      )}
-    </div>
+    <LandingPage 
+      onLogin={() => setView('login')}
+      onRegister={() => setView('register')}
+    />
   );
 };
 
