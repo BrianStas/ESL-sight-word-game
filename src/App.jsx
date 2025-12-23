@@ -9,6 +9,7 @@ import RegisterForm from './components/Auth/RegisterForm';
 import Navigation from './components/Layout/Navigation';
 import TeacherDashboard from './components/Teacher/TeacherDashboard';
 import PublicWordLists from './components/Teacher/PublicWordLists';
+import Leaderboard from './components/Leaderboard/Leaderboard';
 import LandingPage from './components/Landing/LandingPage';
 import './index.css';
 
@@ -296,15 +297,10 @@ const AppContent = () => {
   };
 
   const handleStartDefaultGame = (selectedDifficulty) => {
-    console.log('1. handleStartDefaultGame called with:', selectedDifficulty);
-    console.log('2. Current difficulty state BEFORE update:', difficulty);
     
     setSelectedWordList(null);
     setDifficulty(selectedDifficulty);
     setGameMode('solo');
-    
-    console.log('3. Called setDifficulty with:', selectedDifficulty);
-    console.log('4. Current difficulty state AFTER setDifficulty (may not be updated yet):', difficulty);
     
     startGame(null);
   };
@@ -357,22 +353,24 @@ const AppContent = () => {
       case 'public':
         return (
           <PublicWordLists 
-            onSelectWordList={(wordList) => {
+            onSelectWordList={(wordList, selectedDifficulty) => {
               setSelectedWordList(wordList);
               setCurrentView('game');
               setGameMode('solo');
-              setDifficulty('normal');
+              setDifficulty(selectedDifficulty || 'normal');
               startGame(wordList);
             }}
           />
         );
+      
+      case 'leaderboard':
+        return <Leaderboard />;
       
       case 'profile':
         return <Profile />;
       
       case 'game':
       default:
-        // Tic-Tac-Toe mode
         if (gameMode === 'tictactoe') {
           return (
             <TicTacToeSpellingGame
@@ -382,10 +380,8 @@ const AppContent = () => {
           );
         }
         
-        // Solo game mode
         if (gameMode === 'solo' && gameState.gameStarted) {
-          console.log('About to render GameBoard, difficulty state:', difficulty);
-          console.log('gameMode:', gameMode, 'gameStarted:', gameState.gameStarted);
+          console.log('Rendering GameBoard with difficulty:', difficulty);
           return (
             <GameBoard 
               selectedWordList={selectedWordList}
@@ -400,7 +396,6 @@ const AppContent = () => {
           );
         }
         
-        // Game selection menu
         return (
           <GameSelection 
             onSelectWordList={handleSelectWordList}

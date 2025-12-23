@@ -3,14 +3,12 @@ import {
   Home, 
   BookOpen, 
   Users, 
-  Settings, 
   LogOut, 
   Menu, 
   X,
   User,
   Trophy
 } from 'lucide-react';
-import Button from '../UI/Button';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Navigation = ({ currentView, onNavigate }) => {
@@ -27,14 +25,15 @@ const Navigation = ({ currentView, onNavigate }) => {
 
   const navItems = [
     { id: 'game', label: 'Play Game', icon: Trophy },
-    { id: 'dashboard', label: 'My Lists', icon: BookOpen, teacherOnly: true },
     { id: 'public', label: 'Browse Lists', icon: Users },
+    { id: 'leaderboard', label: 'Leaderboard', icon: Trophy },
     { id: 'profile', label: 'Profile', icon: User }
   ];
 
-  const filteredNavItems = navItems.filter(item => 
-    !item.teacherOnly || userProfile?.role === 'teacher'
-  );
+  // Add teacher-only items
+  if (userProfile?.role === 'teacher') {
+    navItems.splice(1, 0, { id: 'dashboard', label: 'My Lists', icon: BookOpen });
+  }
 
   return (
     <>
@@ -43,12 +42,15 @@ const Navigation = ({ currentView, onNavigate }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
-              <div className="flex-shrink-0">
-                <h1 className="text-xl font-bold text-blue-600">ESL Words</h1>
-              </div>
+              <button 
+                onClick={() => onNavigate('game')}
+                className="flex-shrink-0 hover:opacity-80 transition-opacity"
+              >
+                <h1 className="text-xl font-bold text-blue-600">ESL WordPath</h1>
+              </button>
               
               <div className="flex space-x-4">
-                {filteredNavItems.map((item) => {
+                {navItems.map((item) => {
                   const Icon = item.icon;
                   return (
                     <button
@@ -70,17 +72,20 @@ const Navigation = ({ currentView, onNavigate }) => {
 
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-600">
-                Hello, {userProfile?.displayName || currentUser?.displayName}
+                Hello, {userProfile?.displayName || currentUser?.displayName || 'User'}
                 {userProfile?.role === 'teacher' && (
                   <span className="ml-2 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
                     Teacher
                   </span>
                 )}
               </div>
-              <Button onClick={handleLogout} variant="secondary" size="small">
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
-              </Button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-2 bg-gray-200 hover:bg-gray-300 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </button>
             </div>
           </div>
         </div>
@@ -90,7 +95,12 @@ const Navigation = ({ currentView, onNavigate }) => {
       <nav className="md:hidden bg-white shadow-lg border-b">
         <div className="px-4 sm:px-6">
           <div className="flex justify-between items-center h-16">
-            <h1 className="text-xl font-bold text-blue-600">ESL Words</h1>
+            <button 
+              onClick={() => onNavigate('game')}
+              className="hover:opacity-80 transition-opacity"
+            >
+              <h1 className="text-xl font-bold text-blue-600">ESL Words</h1>
+            </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="text-gray-600 hover:text-gray-900"
@@ -103,7 +113,7 @@ const Navigation = ({ currentView, onNavigate }) => {
             <div className="pb-4 border-t">
               <div className="pt-4 pb-2">
                 <div className="text-sm text-gray-600 px-3">
-                  Hello, {userProfile?.displayName || currentUser?.displayName}
+                  Hello, {userProfile?.displayName || currentUser?.displayName || 'User'}
                   {userProfile?.role === 'teacher' && (
                     <span className="ml-2 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
                       Teacher
@@ -113,7 +123,7 @@ const Navigation = ({ currentView, onNavigate }) => {
               </div>
               
               <div className="space-y-1">
-                {filteredNavItems.map((item) => {
+                {navItems.map((item) => {
                   const Icon = item.icon;
                   return (
                     <button
